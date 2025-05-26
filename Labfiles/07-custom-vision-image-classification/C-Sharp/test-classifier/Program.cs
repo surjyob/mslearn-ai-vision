@@ -30,7 +30,7 @@ namespace test_classifier
                 };
 
                 // Classify test images
-                String[] images = Directory.GetFiles("test-images");
+                String[] images = Directory.GetFiles("C:\\GitHub\\mslearn-ai-vision\\Labfiles\\07-custom-vision-image-classification\\C-Sharp\\test-classifier\\test-images\\");
                 foreach(var image in images)
                 {
                     Console.Write(image + ": ");

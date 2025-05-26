@@ -35,7 +35,7 @@ namespace train_classifier
                 custom_vision_project = training_client.GetProject(project_id);
 
                 // Upload and tag images
-                Upload_Images("more-training-images");
+                Upload_Images("C:\\GitHub\\mslearn-ai-vision\\Labfiles\\07-custom-vision-image-classification\\C-Sharp\\train-classifier\\more-training-images\\");
                 
                 // Retrain the model
                 Train_Model();

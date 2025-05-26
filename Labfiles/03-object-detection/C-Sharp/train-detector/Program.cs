@@ -58,7 +58,7 @@ namespace train_detector
             var imageFileEntries = new List<ImageFileCreateEntry>();
 
             // Get the images and tagged regions from the JSON file
-            string tag_json = File.ReadAllText("tagged-images.json");
+            string tag_json = File.ReadAllText("C:\\GitHub\\mslearn-ai-vision\\Labfiles\\03-object-detection\\C-Sharp\\train-detector\\tagged-images.json");
             using (JsonDocument document = JsonDocument.Parse(tag_json))
             {
                 JsonElement files = document.RootElement.GetProperty("files");

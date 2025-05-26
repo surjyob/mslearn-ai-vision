@@ -1,12 +1,15 @@
-﻿using System;
-using Azure;
+﻿using Azure;
+using Azure.AI.Inference;
+using Azure.AI.Projects;
+using Azure.Core;
+using Azure.Core.Pipeline;
+// Add references
+using Azure.Identity;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
-
-// Add references
-
 
 namespace chat_app
 {
@@ -25,13 +28,39 @@ namespace chat_app
                 string project_connection = configuration["PROJECT_CONNECTION"];
                 string model_deployment = configuration["MODEL_DEPLOYMENT"];
 
-
+                
 
                 // Initialize the project client
+                //var projectClient = new AIProjectClient(project_connectionuri,
+                //    new DefaultAzureCredential());
 
+                //using Azure;
+                //using Azure.Identity;
+                //using Azure.AI.Inference;
+                //using Azure.Core;
+                //using Azure.Core.Pipeline;
 
+                //var endpointUrl = project_connection; // Replace with your actual endpoint
+                var credential = new DefaultAzureCredential();
+
+                Uri endpointUrl = new Uri(project_connection);
+
+                AzureAIInferenceClientOptions clientOptions = new AzureAIInferenceClientOptions();
+                BearerTokenAuthenticationPolicy tokenPolicy = new BearerTokenAuthenticationPolicy(
+                    credential,
+                    new string[] { "https://cognitiveservices.azure.com/.default" }
+                );
+                clientOptions.AddPolicy(tokenPolicy, HttpPipelinePosition.PerRetry);
+
+                var projectClient = new ChatCompletionsClient(
+                    endpointUrl,
+                    credential,
+                    clientOptions
+                );
 
                 // Get a chat client
+                // Get a chat client
+                // ChatCompletionsClient chat = projectClient.GetChatCompletionsClient();
 
 
 
@@ -61,7 +90,21 @@ namespace chat_app
 
 
                         // Get a response to image input
-                        
+                        // Get a response to image input
+                        string imageUrl = "https://github.com/MicrosoftLearning/mslearn-ai-vision/raw/refs/heads/main/Labfiles/08-gen-ai-vision/orange.jpeg";
+                        ChatCompletionsOptions requestOptions = new ChatCompletionsOptions()
+                        {
+                            Messages = {
+                            new ChatRequestSystemMessage(system_message),
+                            new ChatRequestUserMessage([
+                            new ChatMessageTextContentItem(prompt),
+                            new ChatMessageImageContentItem(new Uri(imageUrl))
+                            ]),
+                        },
+                            Model = model_deployment
+                        };
+                        var response = projectClient.Complete(requestOptions);
+                        Console.WriteLine(response.Value.Content);
 
                     }
                 }

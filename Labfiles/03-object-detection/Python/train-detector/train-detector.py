@@ -36,7 +36,7 @@ def Upload_Images(folder):
 
     # Get the tags defined in the project
     tags = training_client.get_tags(custom_vision_project.id)
-
+    print("get tags...")
     # Create a list of images with tagged regions
     tagged_images_with_regions = []
 
@@ -46,6 +46,7 @@ def Upload_Images(folder):
         for image in tagged_images['files']:
             # Get the filename
             file = image['filename']
+            print(file)
             # Get the tagged regions
             regions = []
             for tag in image['tags']:
@@ -57,7 +58,8 @@ def Upload_Images(folder):
             # Add the image and its regions to the list
             with open(os.path.join(folder,file), mode="rb") as image_data:
                 tagged_images_with_regions.append(ImageFileCreateEntry(name=file, contents=image_data.read(), regions=regions))
-
+        
+        print("Add the image and its regions to the list")
     # Upload the list of images as a batch
     upload_result = training_client.create_images_from_files(custom_vision_project.id, ImageFileCreateBatch(images=tagged_images_with_regions))
     # Check for failure
